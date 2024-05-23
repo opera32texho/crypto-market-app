@@ -1,0 +1,46 @@
+<div class="container">
+  <div class="header">
+    <form [formGroup]="searchForm">
+      <mat-form-field>
+        <mat-label>Choose a cryptocurrency</mat-label>
+        <input
+          type="text"
+          matInput
+          formControlName="symbol"
+          [matAutocomplete]="auto"
+          placeholder="Enter symbol (e.g., BTC, ETH, LTC, etc.)"
+        />
+        <mat-autocomplete #auto="matAutocomplete">
+          <cdk-virtual-scroll-viewport
+            itemSize="30"
+            class="virtual-scroll-style"
+          >
+            <mat-option
+              *cdkVirtualFor="let option of filteredOptions"
+              [value]="option.asset_id"
+            >
+              <img
+                [src]="option.url"
+                alt="{{ option.asset_id }}"
+                width="30"
+                height="30"
+                style="margin-right: 8px"
+              />
+              {{ option.asset_id }}
+            </mat-option>
+          </cdk-virtual-scroll-viewport>
+        </mat-autocomplete>
+      </mat-form-field>
+      <button
+        mat-raised-button
+        color="primary"
+        type="submit"
+        (click)="onSubscribe()"
+      >
+        Subscribe
+      </button>
+    </form>
+  </div>
+  <app-real-time-data [symbol]="selectedSymbol"></app-real-time-data>
+  <app-historical-chart [symbol]="selectedSymbol"></app-historical-chart>
+</div>

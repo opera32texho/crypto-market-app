@@ -1,0 +1,9 @@
+.container {
+  &__market-data {
+    display: flex;
+    justify-content: space-between;
+    padding: 20px 60px;
+    border: 1px solid grey;
+    border-radius: 10px;
+  }
+}
