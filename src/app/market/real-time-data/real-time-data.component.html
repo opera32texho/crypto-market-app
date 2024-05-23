@@ -7,11 +7,11 @@
     </div>
     <div class="price">
       <p>Price:</p>
-      <p>{{ price | currency : "USD" }}</p>
+      <p>{{ price | currency : "USD" || "-" }}</p>
     </div>
     <div class="time">
       <p>Time:</p>
-      <p>{{ time }}</p>
+      <p>{{ time || "-" }}</p>
     </div>
   </div>
 </div>

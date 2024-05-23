@@ -2,8 +2,8 @@ import { Injectable } from '@angular/core';
 import { map, Observable } from 'rxjs';
 import { webSocket, WebSocketSubject } from 'rxjs/webSocket';
 import {
-  SubscribeOutRequest,
-  TradeData,
+  ISubscribeOutRequest,
+  ITradeData,
 } from '../interface/real-time-daata.interface';
 
 @Injectable({
@@ -11,7 +11,7 @@ import {
 })
 export class RealTimeDataService {
   private apiKey: string = 'D427FF40-65AA-4BE8-BD11-8250091A5F3A';
-  private ws: WebSocketSubject<SubscribeOutRequest | TradeData> = webSocket({
+  private ws: WebSocketSubject<ISubscribeOutRequest | ITradeData> = webSocket({
     url: `wss://ws.coinapi.io/v1/`,
   });
 
@@ -48,7 +48,7 @@ export class RealTimeDataService {
     });
   }
 
-  public getTradeStream(): Observable<TradeData> {
-    return this.ws.pipe(map((message) => message as TradeData));
+  public getTradeStream(): Observable<ITradeData> {
+    return this.ws.pipe(map((message) => message as ITradeData));
   }
 }

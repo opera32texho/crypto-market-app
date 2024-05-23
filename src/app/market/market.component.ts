@@ -54,7 +54,6 @@ export class MarketComponent implements OnInit {
 
   ngOnInit(): void {
     this.getIcons();
-    setTimeout(() => {}, 5000);
     this.searchForm.get('symbol')?.valueChanges.subscribe((value: string) => {
       this.filteredOptions = this._filter(value);
     });
@@ -68,7 +67,6 @@ export class MarketComponent implements OnInit {
   }
   getIcons(): void {
     this.assetIconService.getAssetIcons().subscribe((icons) => {
-      // console.log(icons);
       this.assetIcons = icons;
       this.filteredOptions = this.assetIcons;
     });

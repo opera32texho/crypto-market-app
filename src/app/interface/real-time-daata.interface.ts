@@ -1,4 +1,4 @@
-export interface TradeData {
+export interface ITradeData {
   type: string;
   symbol_id: string;
   price: number;
@@ -9,7 +9,7 @@ export interface TradeData {
   uuid: string;
 }
 
-export interface SubscribeOutRequest {
+export interface ISubscribeOutRequest {
   type: string;
   apikey: string;
   heartbeat: boolean;

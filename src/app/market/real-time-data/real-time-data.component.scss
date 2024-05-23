@@ -5,5 +5,14 @@
     padding: 20px 60px;
     border: 1px solid grey;
     border-radius: 10px;
+    .symbol {
+      width: 30%;
+    }
+    .price {
+      width: 30%;
+    }
+    .time {
+      width: 30%;
+    }
   }
 }

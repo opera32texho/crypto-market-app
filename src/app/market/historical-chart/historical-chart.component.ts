@@ -4,7 +4,6 @@ import {
   OnChanges,
   OnInit,
   SimpleChanges,
-  ViewChild,
 } from '@angular/core';
 import { HistoricalDataService } from '../../service/historical-data.service';
 import { BaseChartDirective } from 'ng2-charts';
@@ -21,7 +20,6 @@ import { ChartData, ChartOptions } from 'chart.js';
   providers: [HistoricalDataService],
 })
 export class HistoricalChartComponent implements OnInit, OnChanges {
-  @ViewChild(BaseChartDirective) chart?: BaseChartDirective;
   @Input() symbol: string = 'BTC';
 
   public historicalData: IHistoricalDataChart[] = [];
@@ -29,45 +27,7 @@ export class HistoricalChartComponent implements OnInit, OnChanges {
     labels: [],
     datasets: [],
   };
-  public chartOptions: ChartOptions<'line'> = {
-    responsive: true,
-    maintainAspectRatio: true,
-
-    scales: {
-      x: {
-        grid: {
-          display: false,
-        },
-        title: {
-          display: true,
-          text: 'Date',
-        },
-      },
-      y: {
-        grid: {
-          display: false,
-        },
-        title: {
-          display: true,
-          text: 'Price',
-        },
-      },
-    },
-    plugins: {
-      tooltip: {
-        callbacks: {
-          label: function (context) {
-            let label = context.dataset.label || '';
-            if (label) {
-              label += ': ';
-            }
-            label += '$' + context.parsed.y;
-            return label;
-          },
-        },
-      },
-    },
-  };
+  public chartOptions: ChartOptions<'line'> = this.createDefaultOptions();
 
   constructor(private historicalDataService: HistoricalDataService) {}
 
@@ -93,23 +53,65 @@ export class HistoricalChartComponent implements OnInit, OnChanges {
   }
 
   updateChartData(): void {
-    this.chartData.labels = this.historicalData.map((data) =>
-      new Date(data.time_period_start).toLocaleDateString()
-    );
-    this.chartData.datasets = [
-      {
-        label: 'Price',
-        data: this.historicalData.map(
-          (data) => (data.rate_high + data.rate_low) / 2
-        ),
-        borderColor: 'rgba(192, 75, 192, 1)',
-        borderWidth: 1,
-        fill: false,
-      },
-    ];
+    this.chartData = {
+      labels: this.historicalData.map((data) =>
+        new Date(data.time_period_start).toLocaleDateString()
+      ),
+      datasets: [
+        {
+          label: 'Price',
+          data: this.historicalData.map(
+            (data) => (data.rate_high + data.rate_low) / 2
+          ),
+          borderColor: 'rgba(192, 75, 192, 1)',
+          borderWidth: 1,
+          fill: false,
+        },
+      ],
+    };
+  }
 
-    if (this.chart) {
-      this.chart.update();
-    }
+  private createDefaultOptions(): ChartOptions<'line'> {
+    return {
+      responsive: true,
+      maintainAspectRatio: true,
+      scales: {
+        x: {
+          grid: {
+            display: false,
+          },
+          title: {
+            display: true,
+            text: 'Date',
+          },
+        },
+        y: {
+          grid: {
+            display: false,
+          },
+          title: {
+            display: true,
+            text: 'Price',
+          },
+        },
+      },
+      plugins: {
+        legend: {
+          display: false,
+        },
+        tooltip: {
+          callbacks: {
+            label: function (context) {
+              let label = context.dataset.label || '';
+              if (label) {
+                label += ': ';
+              }
+              label += '$' + context.parsed.y;
+              return label;
+            },
+          },
+        },
+      },
+    };
   }
 }
