@@ -1,5 +1,13 @@
 <div class="container">
   <h2>Charting data:</h2>
+  <div class="interval-buttons">
+    <button (click)="setInterval('1D')">1 Day</button>
+    <button (click)="setInterval('1W')">1 Week</button>
+    <button (click)="setInterval('1M')">1 Month</button>
+    <button (click)="setInterval('6M')">6 Months</button>
+    <button (click)="setInterval('1Y')">1 Year</button>
+    <button (click)="setInterval('ALL')">From 2020</button>
+  </div>
   <canvas baseChart [data]="chartData" [options]="chartOptions" type="line">
   </canvas>
 </div>

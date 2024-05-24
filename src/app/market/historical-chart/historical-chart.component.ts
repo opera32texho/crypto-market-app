@@ -1,26 +1,19 @@
-import {
-  Component,
-  Input,
-  OnChanges,
-  OnInit,
-  SimpleChanges,
-} from '@angular/core';
+import { Component, Input, OnChanges, SimpleChanges } from '@angular/core';
 import { HistoricalDataService } from '../../service/historical-data.service';
 import { BaseChartDirective } from 'ng2-charts';
-
-import { HttpClientModule } from '@angular/common/http';
 import { IHistoricalDataChart } from '../../interface/historical-chart.interface';
 import { ChartData, ChartOptions } from 'chart.js';
+
 @Component({
   selector: 'app-historical-chart',
   standalone: true,
-  imports: [BaseChartDirective, HttpClientModule],
+  imports: [BaseChartDirective],
   templateUrl: './historical-chart.component.html',
   styleUrl: './historical-chart.component.scss',
   providers: [HistoricalDataService],
 })
-export class HistoricalChartComponent implements OnInit, OnChanges {
-  @Input() symbol: string = 'BTC';
+export class HistoricalChartComponent implements OnChanges {
+  @Input() asset: string = 'BTC';
 
   public historicalData: IHistoricalDataChart[] = [];
   public chartData: ChartData<'line'> = {
@@ -31,21 +24,54 @@ export class HistoricalChartComponent implements OnInit, OnChanges {
 
   constructor(private historicalDataService: HistoricalDataService) {}
 
-  ngOnInit(): void {
-    this.fetchHistoricalData();
-  }
-
   ngOnChanges(changes: SimpleChanges): void {
-    if (changes['symbol']) {
+    if (changes['asset']) {
       this.fetchHistoricalData();
     }
   }
   fetchHistoricalData(): void {
-    const startDate = '2021-01-01T00:00:00';
-    const endDate = new Date().toISOString().slice(0, -1);
+    let period_id = '12HRS';
+    let startDate;
+    const endDate = new Date().toISOString();
+
+    switch (this.currentInterval) {
+      case '1D':
+        startDate = new Date();
+        startDate.setDate(startDate.getDate() - 1);
+        period_id = '30MIN';
+        break;
+      case '1W':
+        startDate = new Date();
+        startDate.setDate(startDate.getDate() - 7);
+        period_id = '3HRS';
+        break;
+      case '1M':
+        startDate = new Date();
+        startDate.setMonth(startDate.getMonth() - 1);
+        break;
+      case '6M':
+        startDate = new Date();
+        startDate.setMonth(startDate.getMonth() - 6);
+        period_id = '5DAY';
+        break;
+      case '1Y':
+        startDate = new Date();
+        startDate.setFullYear(startDate.getFullYear() - 1);
+        period_id = '10DAY';
+        break;
+      case 'ALL':
+        startDate = new Date('2020-01-01T00:00:00Z');
+        period_id = '10DAY';
+        break;
+      default:
+        startDate = new Date();
+        startDate.setMonth(startDate.getMonth() - 1);
+    }
+
+    startDate = startDate.toISOString();
 
     this.historicalDataService
-      .getHistoricalData(this.symbol, 'USD', startDate, endDate)
+      .getHistoricalData(this.asset, period_id, startDate, endDate)
       .subscribe((data) => {
         this.historicalData = data;
         this.updateChartData();
@@ -55,7 +81,11 @@ export class HistoricalChartComponent implements OnInit, OnChanges {
   updateChartData(): void {
     this.chartData = {
       labels: this.historicalData.map((data) =>
-        new Date(data.time_period_start).toLocaleDateString()
+        new Date(data.time_period_start).toLocaleDateString('en-US', {
+          month: 'short',
+          day: 'numeric',
+          year: '2-digit',
+        })
       ),
       datasets: [
         {
@@ -70,6 +100,10 @@ export class HistoricalChartComponent implements OnInit, OnChanges {
       ],
     };
   }
+  setInterval(interval: string): void {
+    this.currentInterval = interval;
+    this.fetchHistoricalData();
+  }
 
   private createDefaultOptions(): ChartOptions<'line'> {
     return {
@@ -80,18 +114,21 @@ export class HistoricalChartComponent implements OnInit, OnChanges {
           grid: {
             display: false,
           },
-          title: {
-            display: true,
-            text: 'Date',
+
+          ticks: {
+            autoSkip: true,
+            maxTicksLimit: 12,
           },
         },
         y: {
           grid: {
             display: false,
           },
-          title: {
-            display: true,
-            text: 'Price',
+
+          ticks: {
+            callback: function (value) {
+              return '$' + value;
+            },
           },
         },
       },
@@ -114,4 +151,5 @@ export class HistoricalChartComponent implements OnInit, OnChanges {
       },
     };
   }
+  private currentInterval: string = '1M';
 }

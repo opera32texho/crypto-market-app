@@ -5,12 +5,12 @@ import {
   ISubscribeOutRequest,
   ITradeData,
 } from '../interface/real-time-daata.interface';
+import { API_CONFIG } from '../constants/http.constants';
 
 @Injectable({
   providedIn: 'root',
 })
 export class RealTimeDataService {
-  private apiKey: string = 'D427FF40-65AA-4BE8-BD11-8250091A5F3A';
   private ws: WebSocketSubject<ISubscribeOutRequest | ITradeData> = webSocket({
     url: `wss://ws.coinapi.io/v1/`,
   });
@@ -29,22 +29,22 @@ export class RealTimeDataService {
     if (this.currentAsset !== null) {
       this.ws.next({
         type: 'unsubscribe',
-        apikey: this.apiKey,
+        apikey: API_CONFIG.apiKey,
         heartbeat: false,
         subscribe_data_type: ['trade'],
         subscribe_filter_asset_id: [`${this.currentAsset}/USDT`],
-        subscribe_filter_exchange_id: ['BINANCE'],
+        subscribe_filter_exchange_id: ['BINANCEFTS'],
       });
     }
 
     this.currentAsset = asset;
     this.ws.next({
       type: 'subscribe',
-      apikey: this.apiKey,
+      apikey: API_CONFIG.apiKey,
       heartbeat: false,
       subscribe_data_type: ['trade'],
       subscribe_filter_asset_id: [`${asset}/USDT`],
-      subscribe_filter_exchange_id: ['BINANCE'],
+      subscribe_filter_exchange_id: ['BINANCEFTS'],
     });
   }
 

@@ -1,19 +1,20 @@
 import { Injectable } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { AssetIcon } from '../interface/asset-icon.interface';
+import { HttpWrapperService } from './http-wrapper.service';
+import { HttpHeaders } from '@angular/common/http';
+import { API_CONFIG } from '../constants/http.constants';
 
 @Injectable({
   providedIn: 'root',
 })
 export class AssetIconService {
-  private apiKey = 'D427FF40-65AA-4BE8-BD11-8250091A5F3A';
-  private apiUrl = 'https://rest.coinapi.io/v1/assets/icons/25';
-
-  constructor(private http: HttpClient) {}
+  constructor(private http: HttpWrapperService) {}
 
   getAssetIcons(): Observable<AssetIcon[]> {
-    const headers = { 'X-CoinAPI-Key': this.apiKey };
-    return this.http.get<AssetIcon[]>(this.apiUrl, { headers });
+    const headers = new HttpHeaders().set('X-CoinAPI-Key', API_CONFIG.apiKey);
+    return this.http.get<AssetIcon[]>(`${API_CONFIG.apiUrl}/assets/icons/25`, {
+      headers,
+    });
   }
 }

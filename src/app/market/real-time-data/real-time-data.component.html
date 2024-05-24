@@ -3,15 +3,15 @@
   <div class="container__market-data">
     <div class="symbol">
       <p>Symbol:</p>
-      <p>{{ symbol + "/USD" }}</p>
+      <p>{{ currentAsset }}</p>
     </div>
     <div class="price">
       <p>Price:</p>
-      <p>{{ price | currency : "USD" || "-" }}</p>
+      <p>{{ price }}</p>
     </div>
     <div class="time">
       <p>Time:</p>
-      <p>{{ time || "-" }}</p>
+      <p>{{ time }}</p>
     </div>
   </div>
 </div>

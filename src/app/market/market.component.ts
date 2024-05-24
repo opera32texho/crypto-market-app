@@ -17,6 +17,7 @@ import {
 } from '@angular/forms';
 import { AssetIcon } from '../interface/asset-icon.interface';
 import { AssetIconService } from '../service/asset-icon.service';
+import { HttpWrapperService } from '../service/http-wrapper.service';
 
 @Component({
   selector: 'app-market',
@@ -39,7 +40,7 @@ import { AssetIconService } from '../service/asset-icon.service';
 })
 export class MarketComponent implements OnInit {
   public searchForm: FormGroup;
-  public selectedSymbol: string = 'BTC';
+  public selectedAsset: string = 'BTC';
   public assetIcons: AssetIcon[] = [];
   public filteredOptions: AssetIcon[] = [];
 
@@ -53,6 +54,7 @@ export class MarketComponent implements OnInit {
   }
 
   ngOnInit(): void {
+    setTimeout(() => {}, 1000);
     this.getIcons();
     this.searchForm.get('symbol')?.valueChanges.subscribe((value: string) => {
       this.filteredOptions = this._filter(value);
@@ -72,6 +74,6 @@ export class MarketComponent implements OnInit {
     });
   }
   onSubscribe(): void {
-    this.selectedSymbol = this.searchForm.get('symbol')?.value.toUpperCase();
+    this.selectedAsset = this.searchForm.get('symbol')?.value.toUpperCase();
   }
 }
