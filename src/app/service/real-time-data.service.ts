@@ -27,28 +27,25 @@ export class RealTimeDataService {
     }
 
     if (this.currentAsset !== null) {
-      this.ws.next({
-        type: 'unsubscribe',
-        apikey: API_CONFIG.apiKey,
-        heartbeat: false,
-        subscribe_data_type: ['trade'],
-        subscribe_filter_asset_id: [`${this.currentAsset}/USDT`],
-        subscribe_filter_exchange_id: ['BINANCEFTS'],
-      });
+      this.ws.next(this.createCoinApiRequest('unsubscribe', this.currentAsset));
     }
 
     this.currentAsset = asset;
-    this.ws.next({
-      type: 'subscribe',
-      apikey: API_CONFIG.apiKey,
-      heartbeat: false,
-      subscribe_data_type: ['trade'],
-      subscribe_filter_asset_id: [`${asset}/USDT`],
-      subscribe_filter_exchange_id: ['BINANCEFTS'],
-    });
+    this.ws.next(this.createCoinApiRequest('subscribe', asset));
   }
 
   public getTradeStream(): Observable<ITradeData> {
     return this.ws.pipe(map((message) => message as ITradeData));
+  }
+
+  private createCoinApiRequest(type: string, asset: string) {
+    return {
+      type: type,
+      apikey: API_CONFIG.apiKey,
+      heartbeat: false,
+      subscribe_data_type: ['trade'],
+      subscribe_filter_asset_id: [`${asset}/USD`],
+      subscribe_filter_exchange_id: ['COINBASE'],
+    };
   }
 }

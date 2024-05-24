@@ -22,6 +22,7 @@ export class HistoricalChartComponent implements OnChanges {
   };
   public chartOptions: ChartOptions<'line'> = this.createDefaultOptions();
 
+  private currentInterval: string = '1M';
   constructor(private historicalDataService: HistoricalDataService) {}
 
   ngOnChanges(changes: SimpleChanges): void {
@@ -59,8 +60,8 @@ export class HistoricalChartComponent implements OnChanges {
         startDate.setFullYear(startDate.getFullYear() - 1);
         period_id = '10DAY';
         break;
-      case 'ALL':
-        startDate = new Date('2020-01-01T00:00:00Z');
+      case '3Y':
+        startDate = new Date('2021-01-01T00:00:00Z');
         period_id = '10DAY';
         break;
       default:
@@ -151,5 +152,4 @@ export class HistoricalChartComponent implements OnChanges {
       },
     };
   }
-  private currentInterval: string = '1M';
 }

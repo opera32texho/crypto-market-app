@@ -1,6 +1,11 @@
 import { Injectable } from '@angular/core';
-import { HttpClient, HttpHeaders, HttpParams } from '@angular/common/http';
-import { Observable, throwError } from 'rxjs';
+import {
+  HttpClient,
+  HttpErrorResponse,
+  HttpHeaders,
+  HttpParams,
+} from '@angular/common/http';
+import { EMPTY, Observable, throwError, timer } from 'rxjs';
 import { catchError, retry } from 'rxjs/operators';
 interface RequestOptions {
   headers?: HttpHeaders;
@@ -20,7 +25,7 @@ export class HttpWrapperService {
     return this.http.get<T>(url, requestOptions).pipe(
       retry({
         count: 3,
-        delay: this.getDelay(1),
+        delay: this.getDelay,
       }),
       catchError((error) => {
         console.error('Error:', error);
@@ -29,9 +34,13 @@ export class HttpWrapperService {
     );
   }
 
-  private getDelay(retryAttempt: number): number {
-    const delay = Math.min(1000 * 2 ** retryAttempt, 30000);
-    const jitter = delay * 0.2 * Math.random();
-    return delay + jitter;
+  private getDelay(error: HttpErrorResponse, retryAttempt: number) {
+    if (error.status === 429) {
+      const retryDelay = Math.min(1000 * 2 ** retryAttempt, 30000);
+      const jitter = retryDelay * 0.2 * Math.random();
+      return timer(retryDelay + jitter);
+    }
+
+    return EMPTY;
   }
 }

@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { HistoricalChartComponent } from './historical-chart/historical-chart.component';
-import { RealTimeDataComponent } from './real-time-data/real-time-data.component';
+import { MarketDataComponent } from './market-data/market-data.component';
 
 import { CommonModule } from '@angular/common';
 import { MatAutocompleteModule } from '@angular/material/autocomplete';
@@ -17,7 +17,6 @@ import {
 } from '@angular/forms';
 import { AssetIcon } from '../interface/asset-icon.interface';
 import { AssetIconService } from '../service/asset-icon.service';
-import { HttpWrapperService } from '../service/http-wrapper.service';
 
 @Component({
   selector: 'app-market',
@@ -25,7 +24,7 @@ import { HttpWrapperService } from '../service/http-wrapper.service';
   imports: [
     CommonModule,
     HistoricalChartComponent,
-    RealTimeDataComponent,
+    MarketDataComponent,
     FormsModule,
     MatFormFieldModule,
     MatInputModule,
