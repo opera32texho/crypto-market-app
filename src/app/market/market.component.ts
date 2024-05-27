@@ -42,6 +42,7 @@ export class MarketComponent implements OnInit {
   public selectedAsset: string = 'BTC';
   public assetIcons: AssetIcon[] = [];
   public filteredOptions: AssetIcon[] = [];
+  public maxDropdownHeight: number = 240;
 
   constructor(
     private fb: FormBuilder,
@@ -53,10 +54,14 @@ export class MarketComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    setTimeout(() => {}, 1000);
     this.getIcons();
     this.searchForm.get('symbol')?.valueChanges.subscribe((value: string) => {
       this.filteredOptions = this._filter(value);
+      if (this.filteredOptions.length < 5) {
+        this.maxDropdownHeight = this.filteredOptions.length * 48;
+      } else if (this.filteredOptions.length > 5) {
+        this.maxDropdownHeight = 240;
+      }
     });
   }
 
